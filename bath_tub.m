@@ -86,15 +86,19 @@ figure('Name','Bath-Tub Frequency NLS','Position',[100 100 1000 800]);
 subplot(3,1,1);
 plot(t*1000, v, 'b-', 'LineWidth',1.5);
 xlabel('Time (ms)'); ylabel('Voltage (V)');
+title('Input Signal v(t) with Bath-Tub Frequency + Harmonics');
 grid on;
 
 subplot(3,1,2);
 plot(win_center*1000, f_estimated, 'r', 'LineWidth',1.5); hold on;
 plot(t*1000, f_true, 'k--', 'LineWidth',1);
 xlabel('Time (ms)'); ylabel('Frequency (Hz)');
+legend('Estimated f','True f','Location','best');
+title('Time-Varying Frequency (Bath-Tub) Tracking');
 grid on;
 
 subplot(3,1,3);
 plot(win_center*1000, f_error, 'm.-', 'LineWidth',1.5);
 xlabel('Time (ms)'); ylabel('Frequency Error (Hz)');
+title('Frequency Estimation Error: \Delta f = (f_{est} - f_{true})');
 grid on;
