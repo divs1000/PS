@@ -35,11 +35,12 @@ This repository contains MATLAB and Python scripts for frequency estimation and 
 ## Python Files
 
 ### 1. fibbonacci.py
-- Optimized Fibonacci search algorithm
+- Test implementation of Fibonacci search algorithm
+- Used for testing frequency estimation optimization
 - Features:
   - Modified Fibonacci search
   - Function evaluation counter
-  - Search range: 48.5Hz to 51.5Hz
+  - Test range: 48.5Hz to 51.5Hz
 
 ## Simulink Models
 - `HarmonicNLS_APF_Model.slx`: Harmonic analysis with NLS
