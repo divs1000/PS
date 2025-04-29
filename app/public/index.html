@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Frequency vs Time Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    #chart { max-width: 800px; margin-bottom: 2em; }
+    table { border-collapse: collapse; width: 100%; max-width: 800px; }
+    th, td { border: 1px solid #ccc; padding: 0.5em 1em; text-align: right; }
+    th { background: #f0f0f0; }
+    caption { caption-side: top; text-align: left; font-weight: bold; margin-bottom: 0.5em; }
+  </style>
+</head>
+<body>
+
+  <h1>Real-time Frequency vs. Time</h1>
+
+  <canvas id="chart"></canvas>
+
+  <table>
+    <caption>Latest Data Points</caption>
+    <thead>
+      <tr><th>Time (s)</th><th>Frequency (Hz)</th></tr>
+    </thead>
+    <tbody id="data-table">
+      <!-- rows get inserted here -->
+    </tbody>
+  </table>
+
+  <script>
+  const chartCtx = document.getElementById('chart').getContext('2d');
+  const chart = new Chart(chartCtx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Frequency (Hz)',
+        data: [],
+        fill: false,
+        tension: 0.1
+      }]
+    },
+    options: {
+      scales: {
+        x: { type: 'linear',
+             title: { display: true, text: 'Time (s)' } },
+        y: { title: { display: true, text: 'Frequency (Hz)' } }
+      }
+    }
+  });
+
+  async function refresh() {
+    // 1) Fetch the latest points
+    const res    = await fetch('/api/freq?limit=200');
+    const points = await res.json();
+
+    // 2) Update chart
+    chart.data.labels    = points.map(p => p.time);
+    chart.data.datasets[0].data = points.map(p => ({ x: p.time, y: p.frequency }));
+    chart.update();
+
+    // 3) Update table
+    const tbody = document.getElementById('data-table');
+    tbody.innerHTML = '';  // clear
+    for (const p of points) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${p.time.toFixed(3)}</td>
+        <td>${p.frequency.toFixed(3)}</td>
+      `;
+      tbody.appendChild(row);
+    }
+  }
+
+  // Initial load & periodic refresh
+  refresh();
+  setInterval(refresh, 2000);  // every 2 seconds
+  </script>
+
+</body>
+</html>
